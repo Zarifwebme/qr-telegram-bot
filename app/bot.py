@@ -88,7 +88,7 @@ async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> N
 def main():
     try:
         # Telegram bot tokenini bu yerda o'zgartiring
-        TOKEN = "6153575906:AAFS5vUiWTXGoJCv4Rdo8a7fDnGPBVXnexA"
+        TOKEN = "Bot_tokken"
 
         # Botni sozlash
         application = ApplicationBuilder().token(TOKEN).build()
