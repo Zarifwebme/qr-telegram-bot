@@ -17,7 +17,7 @@ class Settings:
 
     bot_token: str
     database_url: str
-    max_qr_content_length: int = 2048
+    max_qr_content_length: int = 500
 
 
 def load_settings() -> Settings:
@@ -34,4 +34,17 @@ def load_settings() -> Settings:
     if not database_url:
         raise RuntimeError("DATABASE_URL is not set")
 
-    return Settings(bot_token=bot_token, database_url=database_url)
+    max_qr_content_length_raw = os.getenv("MAX_QR_CONTENT_LENGTH", "500").strip()
+    try:
+        max_qr_content_length = int(max_qr_content_length_raw)
+    except ValueError as error:
+        raise RuntimeError("MAX_QR_CONTENT_LENGTH butun son bo‘lishi kerak") from error
+
+    if max_qr_content_length < 1:
+        raise RuntimeError("MAX_QR_CONTENT_LENGTH 1 dan katta bo‘lishi kerak")
+
+    return Settings(
+        bot_token=bot_token,
+        database_url=database_url,
+        max_qr_content_length=max_qr_content_length,
+    )

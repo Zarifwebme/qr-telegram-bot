@@ -6,6 +6,7 @@ from aiogram import F, Router
 from aiogram.filters import Command
 from aiogram.types import Message
 
+from app.config import load_settings
 from app.database.crud import get_or_create_user
 from app.database.db import session_scope
 from app.handlers.my_qrcodes import my_qrcodes_command
@@ -19,6 +20,7 @@ from app.utils.keyboards import (
 
 
 router = Router(name="start")
+settings = load_settings()
 
 
 async def _ensure_user(message: Message) -> None:
@@ -38,7 +40,7 @@ async def start_handler(message: Message) -> None:
     await _ensure_user(message)
     await message.answer(
         "Salom! Men professional QR botman.\n\n"
-        "Matn yoki URL yuboring, men QR yarataman.\n"
+        f"Matn yoki URL yuboring (maksimum {settings.max_qr_content_length} belgi), men QR yarataman.\n"
         "Rasm yuborsangiz, ichidagi ma'lumotni o‘qib beraman.",
         reply_markup=build_start_menu(),
     )
@@ -50,7 +52,7 @@ async def help_handler(message: Message) -> None:
 
     await message.answer(
         "Yordam:\n"
-        f"- {START_MENU_QR_CREATE} - matn yoki URL dan QR yaratish\n"
+        f"- {START_MENU_QR_CREATE} - matn yoki URL dan QR yaratish (maksimum {settings.max_qr_content_length} belgi)\n"
         f"- {START_MENU_QR_READ} - QR rasmni o‘qish\n"
         f"- {START_MENU_MY_QR} - saqlangan QR larni ko‘rish\n"
         f"- {START_MENU_HELP} - ushbu yordam matni",
@@ -62,7 +64,10 @@ async def help_handler(message: Message) -> None:
 async def qr_create_hint_handler(message: Message) -> None:
     """Prompt the user to send content for QR generation."""
 
-    await message.answer("QR yaratish uchun matn yoki URL yuboring.", reply_markup=build_start_menu())
+    await message.answer(
+        f"QR yaratish uchun matn yoki URL yuboring. Maksimum: {settings.max_qr_content_length} belgi.",
+        reply_markup=build_start_menu(),
+    )
 
 
 @router.message(F.text == START_MENU_QR_READ)

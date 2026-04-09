@@ -45,6 +45,7 @@ Loyiha ildizida `.env` fayl yarating:
 ```env
 BOT_TOKEN=123456:ABCDEF_your_telegram_token
 DATABASE_URL=sqlite+aiosqlite:///./data/qrbot.db
+MAX_QR_CONTENT_LENGTH=500
 ```
 
 ## O‘rnatish
@@ -74,5 +75,5 @@ python app/bot.py
 
 - Bot ishga tushganda kerakli jadvallar avtomatik yaratiladi.
 - Vaqtinchalik export fayllari diskka yozilmaydi, xotirada ishlanadi.
-- Juda uzun matnlar uchun QR zichroq bo‘ladi; bot uzunlikni oldindan tekshiradi.
+- QR uchun matn uzunligi `MAX_QR_CONTENT_LENGTH` orqali cheklanadi (standart: 500 belgi).
 
