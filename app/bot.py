@@ -1,110 +1,85 @@
-import logging
-import qrcode
-import asyncio
-from telegram import Update
-from telegram.ext import (
-    ApplicationBuilder,
-    CommandHandler,
-    MessageHandler,
-    ContextTypes,
-    filters,
-)
+"""aiogram 3 application entrypoint for the Telegram QR bot."""
 
-# Logger sozlamalari
+from __future__ import annotations
+
+import asyncio
+import logging
+
+from aiogram import Bot, Dispatcher
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
+from aiogram.types import BotCommand, ErrorEvent
+
+from app.config import load_settings
+from app.database.db import init_db
+from app.handlers import routers
+
+
 logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO,
-    handlers=[
-        logging.FileHandler("bot.log"),  # Loglarni faylga yozish
-        logging.StreamHandler()  # Konsolda ko‘rsatish
-    ]
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
 
 
-# QR kodni yaratish funksiyasi
-def generate_qr(data, size=10, color="black", background="white"):
-    qr = qrcode.QRCode(
-        version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=size,
-        border=4,
+async def _set_bot_commands(bot: Bot) -> None:
+    """Publish a compact command list in Telegram."""
+
+    commands = [
+        BotCommand(command="start", description="Open the bot menu"),
+        BotCommand(command="help", description="Show help"),
+        BotCommand(command="my_qrcodes", description="Show saved QR codes"),
+    ]
+    await bot.set_my_commands(commands)
+
+
+async def _startup(bot: Bot) -> None:
+    """Initialize the database and bot metadata before polling starts."""
+
+    await init_db()
+    await _set_bot_commands(bot)
+    logger.info("Bot started and database initialized")
+
+
+async def _shutdown(bot: Bot) -> None:
+    """Close resources when polling stops."""
+
+    await bot.session.close()
+    logger.info("Bot stopped")
+
+
+async def _global_error_handler(event: ErrorEvent) -> None:
+    """Log unexpected errors and keep the dispatcher running."""
+
+    logger.error("Unhandled error: %s", event.exception, exc_info=True)
+
+
+async def main() -> None:
+    """Start the Telegram bot with the configured environment."""
+
+    settings = load_settings()
+    bot = Bot(
+        token=settings.bot_token,
+        default=DefaultBotProperties(parse_mode=ParseMode.HTML),
     )
-    qr.add_data(data)
-    qr.make(fit=True)
-    img = qr.make_image(fill_color=color, back_color=background)
-    return img
+    dp = Dispatcher()
 
+    for router in routers:
+        dp.include_router(router)
 
-# /start komandasini ishlatish
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text(
-        "Assalomu alaykum! Men QR kod generator botman.\n"
-        "Menga matn yoki URL yuboring (200 belgidan oshmasligi kerak), men esa siz uchun QR kod yarataman!"
-    )
+    dp.errors.register(_global_error_handler)
 
+    async def on_startup() -> None:
+        await _startup(bot)
 
-# QR kodni yaratish va yuborish
-async def generate_qr_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    try:
-        user_input = update.message.text
-        if len(user_input) > 200:
-            await update.message.reply_text(
-                "Xatolik: Matn 200 belgidan oshmasligi kerak! Iltimos, qisqaroq matn yuboring."
-            )
-            return
+    async def on_shutdown() -> None:
+        await _shutdown(bot)
 
-        # QR kodni yaratish
-        img = generate_qr(user_input)
+    dp.startup.register(on_startup)
+    dp.shutdown.register(on_shutdown)
 
-        # QR kodni vaqtinchalik fayl sifatida saqlash
-        file_path = "qr_code.png"
-        img.save(file_path)
-
-        # QR kodni foydalanuvchiga yuborish
-        await update.message.reply_photo(photo=open(file_path, "rb"))
-        await update.message.reply_text("QR kodingiz tayyor!")
-    except Exception as e:
-        logger.error(f"QR kod yaratishda xatolik: {e}", exc_info=True)
-        await update.message.reply_text(
-            "Kutilmagan xatolik yuz berdi! Iltimos, qayta urinib ko‘ring."
-        )
-
-
-# Botdagi global xatolarni qayta ishlash
-async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
-    logger.error(f"Global xatolik: {context.error}", exc_info=True)
-    if update and update.effective_user:
-        try:
-            await context.bot.send_message(
-                chat_id=update.effective_user.id,
-                text="Kutilmagan xatolik yuz berdi! Admin bilan bog‘laning."
-            )
-        except Exception as e:
-            logger.error(f"Foydalanuvchiga xatolik haqida xabar yuborishda muammo: {e}")
-
-
-# Botni ishga tushirish
-def main():
-    try:
-        # Telegram bot tokenini bu yerda o'zgartiring
-        TOKEN = "Bot_tokken"
-
-        # Botni sozlash
-        application = ApplicationBuilder().token(TOKEN).build()
-
-        # Komanda va xabarlar uchun handlerlar
-        application.add_handler(CommandHandler("start", start))
-        application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, generate_qr_handler))
-
-        # Global xatolar uchun handler
-        application.add_error_handler(error_handler)
-
-        # Botni ishga tushirish
-        application.run_polling()
-    except Exception as e:
-        logger.critical(f"Botni ishga tushirishda xatolik: {e}", exc_info=True)
+    await dp.start_polling(bot)
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

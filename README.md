@@ -1,54 +1,78 @@
-Here's a suggested content for your `README.md` file for the `telegram_qr_bot` repository:
-
-```markdown
 # Telegram QR Bot
 
-This repository contains a Telegram bot that generates QR codes. The bot allows users to easily create QR codes by sending text messages to the bot.
+Production-ready Telegram QR bot built with aiogram 3, async SQLAlchemy and SQLite.
 
 ## Features
 
-- Generate QR codes from text messages.
-- Support for different types of QR codes.
-- Easy to use and integrate with Telegram.
+- Create QR codes from text or URLs.
+- Preview QR as PNG and save metadata to SQLite.
+- Decode QR codes from images using OpenCV with a pyzbar fallback.
+- Export the original QR content as PNG, JPG, SVG and PDF.
+- Generate printable A4 sticker sheets in 1x, 4x, 9x and 16x layouts.
+- Provide a clean menu-driven Telegram UX.
 
-## Getting Started
+## Project Structure
 
-### Prerequisites
+```text
+project/
+├── bot.py
+├── app/
+│   ├── bot.py
+│   ├── config.py
+│   ├── database/
+│   │   ├── crud.py
+│   │   ├── db.py
+│   │   └── models.py
+│   ├── handlers/
+│   │   ├── export.py
+│   │   ├── my_qrcodes.py
+│   │   ├── qr_decode.py
+│   │   ├── qr_generate.py
+│   │   └── start.py
+│   ├── services/
+│   │   ├── decode_service.py
+│   │   ├── pdf_service.py
+│   │   └── qr_service.py
+│   └── utils/
+│       ├── keyboards.py
+│       └── text.py
+```
 
-- Python 3.6 or higher
-- A Telegram account
+## Environment Variables
 
-### Installation
+Create a `.env` file in the project root:
 
-1. Clone the repository:
+```env
+BOT_TOKEN=123456:ABCDEF_your_telegram_token
+DATABASE_URL=sqlite+aiosqlite:///./data/qrbot.db
+```
 
-   ```bash
-   git clone https://github.com/Zarifwebme/telegram_qr_bot.git
-   cd telegram_qr_bot
-   ```
+## Installation
 
-2. Install the required dependencies:
+1. Create and activate a virtual environment.
+2. Install dependencies:
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+```bash
+pip install -r requirements.txt
+```
 
-### Configuration
+3. The default SQLite database file will be created automatically on startup.
 
-1. Create a new bot on Telegram by talking to the [BotFather](https://telegram.me/BotFather).
-2. Obtain your bot token from the BotFather.
-3. Create a `.env` file in the root directory and add your bot token:
+## Running
 
-   ```env
-   BOT_TOKEN=your_bot_token_here
-   ```
+```bash
+python bot.py
+```
 
-### Usage
+or
 
-1. Run the bot:
+```bash
+python app/bot.py
+```
 
-   ```bash
-   python bot.py
-   ```
+## Notes
 
-2. Start a chat with your bot on Telegram and send it a text message to generate a QR code.
+- The bot creates database tables on startup.
+- Temporary export data is kept in memory and not written to disk.
+- Large QR content may produce denser codes; the bot validates message length before rendering.
+
