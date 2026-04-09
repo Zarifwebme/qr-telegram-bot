@@ -26,9 +26,9 @@ async def _set_bot_commands(bot: Bot) -> None:
     """Publish a compact command list in Telegram."""
 
     commands = [
-        BotCommand(command="start", description="Open the bot menu"),
-        BotCommand(command="help", description="Show help"),
-        BotCommand(command="my_qrcodes", description="Show saved QR codes"),
+        BotCommand(command="start", description="Bot menyusini ochish"),
+        BotCommand(command="help", description="Yordamni ko‘rsatish"),
+        BotCommand(command="my_qrcodes", description="Saqlangan QR kodlarni ko‘rish"),
     ]
     await bot.set_my_commands(commands)
 

@@ -61,7 +61,7 @@ async def qr_generate_handler(message: Message) -> None:
 
     png_bytes = await asyncio.to_thread(build_png_bytes, content)
     preview = BufferedInputFile(png_bytes, filename=f"qr_{qr_code.id}.png")
-    caption = f"QR tayyor. ID: {qr_code.id}\nContent: {content[:120]}"
+    caption = f"QR tayyor. ID: {qr_code.id}\nMatn: {content[:120]}"
     await message.answer_photo(
         photo=preview,
         caption=caption,

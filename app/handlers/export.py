@@ -52,13 +52,13 @@ async def qr_export_callback(query: CallbackQuery) -> None:
         data = await asyncio.to_thread(build_single_qr_pdf_bytes, qr_code.content)
         file_name = f"qr_{qr_code.id}.pdf"
     else:
-        await query.answer("Noto‘g‘ri export formati.", show_alert=True)
+        await query.answer("Noto‘g‘ri yuklab olish formati.", show_alert=True)
         return
 
-    await query.answer("Export tayyorlandi.")
+    await query.answer("Yuklab olish fayli tayyorlandi.")
     await query.message.answer_document(
         document=BufferedInputFile(data, filename=file_name),
-        caption=f"Export: {export_format.upper()}",
+        caption=f"Format: {export_format.upper()}",
         reply_markup=build_export_keyboard(qr_code.id),
     )
 
@@ -82,9 +82,9 @@ async def qr_sticker_callback(query: CallbackQuery) -> None:
         return
 
     sheet_bytes = await asyncio.to_thread(build_sticker_sheet_pdf_bytes, qr_code.content, copies)
-    await query.answer("Sticker sheet tayyorlandi.")
+    await query.answer("Stiker varaqasi tayyorlandi.")
     await query.message.answer_document(
         document=BufferedInputFile(sheet_bytes, filename=f"qr_{qr_code.id}_sheet_{copies}x.pdf"),
-        caption=f"Printable sheet: {copies}x",
+        caption=f"Chop etish varaqasi: {copies}x",
         reply_markup=build_export_keyboard(qr_code.id),
     )

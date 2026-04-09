@@ -39,7 +39,7 @@ async def start_handler(message: Message) -> None:
     await message.answer(
         "Salom! Men professional QR botman.\n\n"
         "Matn yoki URL yuboring, men QR yarataman.\n"
-        "Rasm yuborsangiz, uni decode qilaman.",
+        "Rasm yuborsangiz, ichidagi ma'lumotni o‘qib beraman.",
         reply_markup=build_start_menu(),
     )
 
@@ -50,8 +50,8 @@ async def help_handler(message: Message) -> None:
 
     await message.answer(
         "Yordam:\n"
-        f"- {START_MENU_QR_CREATE} - text yoki URL dan QR yaratish\n"
-        f"- {START_MENU_QR_READ} - QR rasmni decode qilish\n"
+        f"- {START_MENU_QR_CREATE} - matn yoki URL dan QR yaratish\n"
+        f"- {START_MENU_QR_READ} - QR rasmni o‘qish\n"
         f"- {START_MENU_MY_QR} - saqlangan QR larni ko‘rish\n"
         f"- {START_MENU_HELP} - ushbu yordam matni",
         reply_markup=build_start_menu(),
@@ -62,7 +62,7 @@ async def help_handler(message: Message) -> None:
 async def qr_create_hint_handler(message: Message) -> None:
     """Prompt the user to send content for QR generation."""
 
-    await message.answer("QR yaratish uchun text yoki URL yuboring.", reply_markup=build_start_menu())
+    await message.answer("QR yaratish uchun matn yoki URL yuboring.", reply_markup=build_start_menu())
 
 
 @router.message(F.text == START_MENU_QR_READ)

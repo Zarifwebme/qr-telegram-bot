@@ -45,7 +45,7 @@ async def qr_decode_photo_handler(message: Message) -> None:
 
     content = decoded_items[0]
     reply_markup = build_open_link_keyboard(content) if is_url(content) else None
-    await message.answer(f"Decoded content:\n{content}", reply_markup=reply_markup)
+    await message.answer(f"O‘qilgan ma'lumot:\n{content}", reply_markup=reply_markup)
 
 
 @router.message(F.document)
@@ -67,4 +67,4 @@ async def qr_decode_document_handler(message: Message) -> None:
 
     content = decoded_items[0]
     reply_markup = build_open_link_keyboard(content) if is_url(content) else None
-    await message.answer(f"Decoded content:\n{content}", reply_markup=reply_markup)
+    await message.answer(f"O‘qilgan ma'lumot:\n{content}", reply_markup=reply_markup)

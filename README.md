@@ -1,17 +1,17 @@
 # Telegram QR Bot
 
-Production-ready Telegram QR bot built with aiogram 3, async SQLAlchemy and SQLite.
+Aiogram 3, async SQLAlchemy va SQLite asosida yozilgan zamonaviy Telegram QR bot.
 
-## Features
+## Imkoniyatlar
 
-- Create QR codes from text or URLs.
-- Preview QR as PNG and save metadata to SQLite.
-- Decode QR codes from images using OpenCV with a pyzbar fallback.
-- Export the original QR content as PNG, JPG, SVG and PDF.
-- Generate printable A4 sticker sheets in 1x, 4x, 9x and 16x layouts.
-- Provide a clean menu-driven Telegram UX.
+- Matn yoki URL dan QR kod yaratadi.
+- QR ni PNG ko‘rinishda yuboradi va ma'lumotni SQLite bazaga saqlaydi.
+- Rasm ichidagi QR ni OpenCV va pyzbar yordamida o‘qiydi.
+- Bir xil mazmundan PNG, JPG, SVG va PDF formatlarda fayl beradi.
+- 1x, 4x, 9x, 16x variantlarda A4 stiker varaqasini yaratadi.
+- Menyu asosidagi qulay Telegram interfeysiga ega.
 
-## Project Structure
+## Loyiha Tuzilmasi
 
 ```text
 project/
@@ -38,41 +38,41 @@ project/
 │       └── text.py
 ```
 
-## Environment Variables
+## Muhit O‘zgaruvchilari
 
-Create a `.env` file in the project root:
+Loyiha ildizida `.env` fayl yarating:
 
 ```env
 BOT_TOKEN=123456:ABCDEF_your_telegram_token
 DATABASE_URL=sqlite+aiosqlite:///./data/qrbot.db
 ```
 
-## Installation
+## O‘rnatish
 
-1. Create and activate a virtual environment.
-2. Install dependencies:
+1. Virtual muhit yarating va faollashtiring.
+2. Kerakli kutubxonalarni o‘rnating:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-3. The default SQLite database file will be created automatically on startup.
+3. Bot ishga tushganda SQLite fayli avtomatik yaratiladi.
 
-## Running
+## Ishga Tushirish
 
 ```bash
 python bot.py
 ```
 
-or
+yoki
 
 ```bash
 python app/bot.py
 ```
 
-## Notes
+## Eslatma
 
-- The bot creates database tables on startup.
-- Temporary export data is kept in memory and not written to disk.
-- Large QR content may produce denser codes; the bot validates message length before rendering.
+- Bot ishga tushganda kerakli jadvallar avtomatik yaratiladi.
+- Vaqtinchalik export fayllari diskka yozilmaydi, xotirada ishlanadi.
+- Juda uzun matnlar uchun QR zichroq bo‘ladi; bot uzunlikni oldindan tekshiradi.
 

@@ -25,7 +25,7 @@ def build_single_qr_pdf_bytes(content: str) -> bytes:
     qr_image = build_qr_image(content, box_size=12)
     buffer = BytesIO()
     pdf = canvas.Canvas(buffer, pagesize=A4)
-    _draw_centered_title(pdf, "QR Code Export", page_width, page_height)
+    _draw_centered_title(pdf, "QR Kod Fayli", page_width, page_height)
 
     target_size = min(page_width, page_height) * 0.58
     x_position = (page_width - target_size) / 2
@@ -64,9 +64,9 @@ def build_sticker_sheet_pdf_bytes(content: str, copies: int) -> bytes:
     qr_image = build_qr_image(content, box_size=10)
     buffer = BytesIO()
     pdf = canvas.Canvas(buffer, pagesize=A4)
-    _draw_centered_title(pdf, f"Printable QR Sheet - {copies}x", page_width, page_height)
+    _draw_centered_title(pdf, f"Chop Etish Uchun QR Varaq - {copies}x", page_width, page_height)
     pdf.setFont("Helvetica", 9)
-    pdf.drawCentredString(page_width / 2, page_height - 58, "Optimized for A4 printing")
+    pdf.drawCentredString(page_width / 2, page_height - 58, "A4 formatda chop etish uchun")
 
     start_x = (page_width - ((grid_size * cell_size) + ((grid_size - 1) * gap))) / 2
     start_y = page_height - margin - header_height - cell_size

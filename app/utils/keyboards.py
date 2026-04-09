@@ -37,10 +37,10 @@ def build_export_keyboard(qr_id: int) -> InlineKeyboardMarkup:
     builder.button(text="JPG", callback_data=f"qr_export:{qr_id}:jpg")
     builder.button(text="SVG", callback_data=f"qr_export:{qr_id}:svg")
     builder.button(text="PDF", callback_data=f"qr_export:{qr_id}:pdf")
-    builder.button(text="Sticker 1x", callback_data=f"qr_sticker:{qr_id}:1")
-    builder.button(text="Sticker 4x", callback_data=f"qr_sticker:{qr_id}:4")
-    builder.button(text="Sticker 9x", callback_data=f"qr_sticker:{qr_id}:9")
-    builder.button(text="Sticker 16x", callback_data=f"qr_sticker:{qr_id}:16")
+    builder.button(text="Stiker 1x", callback_data=f"qr_sticker:{qr_id}:1")
+    builder.button(text="Stiker 4x", callback_data=f"qr_sticker:{qr_id}:4")
+    builder.button(text="Stiker 9x", callback_data=f"qr_sticker:{qr_id}:9")
+    builder.button(text="Stiker 16x", callback_data=f"qr_sticker:{qr_id}:16")
     builder.adjust(2, 2, 2, 2)
     return builder.as_markup()
 
@@ -49,7 +49,7 @@ def build_open_link_keyboard(url: str) -> InlineKeyboardMarkup:
     """Create a single button keyboard that opens a decoded URL."""
 
     builder = InlineKeyboardBuilder()
-    builder.button(text="Open Link", url=url)
+    builder.button(text="Havolani ochish", url=url)
     return builder.as_markup()
 
 
