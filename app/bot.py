@@ -8,6 +8,7 @@ import logging
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from aiogram.exceptions import TelegramNetworkError
 from aiogram.types import BotCommand, ErrorEvent
 
 from app.config import load_settings
@@ -37,7 +38,10 @@ async def _startup(bot: Bot) -> None:
     """Initialize the database and bot metadata before polling starts."""
 
     await init_db()
-    await _set_bot_commands(bot)
+    try:
+        await _set_bot_commands(bot)
+    except TelegramNetworkError:
+        logger.warning("Could not set bot commands because Telegram is unreachable")
     logger.info("Bot started and database initialized")
 
 
@@ -58,10 +62,6 @@ async def main() -> None:
     """Start the Telegram bot with the configured environment."""
 
     settings = load_settings()
-    bot = Bot(
-        token=settings.bot_token,
-        default=DefaultBotProperties(parse_mode=ParseMode.HTML),
-    )
     dp = Dispatcher()
 
     for router in routers:
@@ -69,16 +69,23 @@ async def main() -> None:
 
     dp.errors.register(_global_error_handler)
 
-    async def on_startup() -> None:
-        await _startup(bot)
-
-    async def on_shutdown() -> None:
-        await _shutdown(bot)
-
-    dp.startup.register(on_startup)
-    dp.shutdown.register(on_shutdown)
-
-    await dp.start_polling(bot)
+    while True:
+        bot = Bot(
+            token=settings.bot_token,
+            default=DefaultBotProperties(parse_mode=ParseMode.HTML),
+        )
+        try:
+            await _startup(bot)
+            await dp.start_polling(bot)
+            break
+        except TelegramNetworkError as error:
+            logger.warning("Telegram unreachable, retrying in 10s: %s", error)
+            await asyncio.sleep(10)
+        except Exception:
+            logger.exception("Unexpected polling failure, retrying in 10s")
+            await asyncio.sleep(10)
+        finally:
+            await _shutdown(bot)
 
 
 if __name__ == "__main__":
