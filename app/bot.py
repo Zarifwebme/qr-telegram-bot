@@ -4,13 +4,9 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import ssl
 
-import certifi
-from aiohttp import ClientSession, TCPConnector
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
-from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.enums import ParseMode
 from aiogram.types import BotCommand, ErrorEvent
 
@@ -62,16 +58,9 @@ async def main() -> None:
     """Start the Telegram bot with the configured environment."""
 
     settings = load_settings()
-    
-    ssl_context = ssl.create_default_context(cafile=certifi.where())
-    connector = TCPConnector(ssl_context=ssl_context)
-    client_session = ClientSession(connector=connector)
-    session = AiohttpSession(client=client_session)
-    
     bot = Bot(
         token=settings.bot_token,
         default=DefaultBotProperties(parse_mode=ParseMode.HTML),
-        session=session,
     )
     dp = Dispatcher()
 
