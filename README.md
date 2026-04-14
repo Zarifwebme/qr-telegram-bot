@@ -71,6 +71,62 @@ yoki
 python app/bot.py
 ```
 
+## PythonAnywhere (nohup bilan doimiy ishga tushirish)
+
+1. Bash konsolda loyiha papkasiga kiring:
+
+```bash
+cd ~/qrtelebot/qr-telegram-bot
+```
+
+2. Virtual muhit yarating (agar hali bo'lmasa) va kutubxonalarni o'rnating:
+
+```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+3. `.env` faylni to'ldiring (`BOT_TOKEN` majburiy).
+
+4. Botni fon rejimida ishga tushiring:
+
+```bash
+nohup .venv/bin/python bot.py >> bot.log 2>&1 &
+```
+
+Yoki tayyor skriptlar bilan:
+
+```bash
+chmod +x scripts/start_bot.sh scripts/stop_bot.sh
+./scripts/start_bot.sh
+```
+
+5. Jarayon ishlayotganini tekshiring:
+
+```bash
+ps -ef | grep "python bot.py" | grep -v grep
+tail -f bot.log
+```
+
+6. To'xtatish:
+
+```bash
+pkill -f "python bot.py"
+```
+
+Yoki:
+
+```bash
+./scripts/stop_bot.sh
+```
+
+Muhim:
+- `nohup` faqat jarayonni fon rejimida qoldiradi, server restart bo'lsa jarayon qayta turmaydi.
+- PythonAnywhere'da haqiqiy 24/7 uchun eng yaxshi variant: "Always-on task" (pullik akkauntda).
+- Agar free akkaunt ishlatsangiz, Scheduled task orqali botni periodik tekshirib qayta ishga tushirish tavsiya qilinadi.
+
 ## Eslatma
 
 - Bot ishga tushganda kerakli jadvallar avtomatik yaratiladi.

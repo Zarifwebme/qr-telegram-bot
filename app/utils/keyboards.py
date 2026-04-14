@@ -41,6 +41,7 @@ def build_export_keyboard(qr_id: int) -> InlineKeyboardMarkup:
     builder.button(text="Stiker 4x", callback_data=f"qr_sticker:{qr_id}:4")
     builder.button(text="Stiker 9x", callback_data=f"qr_sticker:{qr_id}:9")
     builder.button(text="Stiker 16x", callback_data=f"qr_sticker:{qr_id}:16")
+    builder.button(text="Stiker 20x", callback_data=f"qr_sticker:{qr_id}:20")
     builder.adjust(2, 2, 2, 2)
     return builder.as_markup()
 

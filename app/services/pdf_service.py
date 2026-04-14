@@ -50,7 +50,7 @@ def build_single_qr_pdf_bytes(content: str) -> bytes:
 def build_sticker_sheet_pdf_bytes(content: str, copies: int) -> bytes:
     """Generate an A4 printable sheet with QR codes arranged in a grid."""
 
-    grid_map = {1: 1, 4: 2, 9: 3, 16: 4}
+    grid_map = {1: 1, 4: 2, 9: 3, 16: 4, 20: 5}
     grid_size = grid_map.get(copies, 2)
     page_width, page_height = A4
     margin = 24
