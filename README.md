@@ -6,7 +6,7 @@ Aiogram 3, async SQLAlchemy va SQLite asosida yozilgan zamonaviy Telegram QR bot
 
 - Matn yoki URL dan QR kod yaratadi.
 - QR ni PNG ko‘rinishda yuboradi va ma'lumotni SQLite bazaga saqlaydi.
-- Rasm ichidagi QR ni OpenCV va pyzbar yordamida o‘qiydi.
+- Rasm ichidagi QR ni pyzbar yordamida o‘qiydi.
 - Bir xil mazmundan PNG, JPG, SVG va PDF formatlarda fayl beradi.
 - 1x, 4x, 9x, 16x variantlarda A4 stiker varaqasini yaratadi.
 - Menyu asosidagi qulay Telegram interfeysiga ega.
@@ -55,6 +55,12 @@ MAX_QR_CONTENT_LENGTH=500
 
 ```bash
 pip install -r requirements.txt
+```
+
+PythonAnywhere uchun tavsiya:
+
+```bash
+pip install --no-cache-dir -r requirements.txt
 ```
 
 3. Bot ishga tushganda SQLite fayli avtomatik yaratiladi.
@@ -132,4 +138,5 @@ Muhim:
 - Bot ishga tushganda kerakli jadvallar avtomatik yaratiladi.
 - Vaqtinchalik export fayllari diskka yozilmaydi, xotirada ishlanadi.
 - QR uchun matn uzunligi `MAX_QR_CONTENT_LENGTH` orqali cheklanadi (standart: 500 belgi).
+- Rasm ichidagi QR o'qish `pyzbar` ishlay olgan muhitda faol; PythonAnywhere cheklovi bo'lsa, botning qolgan funksiyalari ishlashda davom etadi.
 
