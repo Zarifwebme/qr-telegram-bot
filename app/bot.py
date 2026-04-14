@@ -4,9 +4,12 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
+import socket
 
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
+from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.enums import ParseMode
 from aiogram.exceptions import TelegramNetworkError
 from aiogram.types import BotCommand, ErrorEvent
@@ -62,6 +65,7 @@ async def main() -> None:
     """Start the Telegram bot with the configured environment."""
 
     settings = load_settings()
+    proxy = os.getenv("TELEGRAM_PROXY", "").strip() or None
     dp = Dispatcher()
 
     for router in routers:
@@ -70,9 +74,13 @@ async def main() -> None:
     dp.errors.register(_global_error_handler)
 
     while True:
+        session = AiohttpSession(proxy=proxy)
+        # Some hosting providers route IPv6 poorly for Telegram; prefer IPv4.
+        session._connector_init["family"] = socket.AF_INET
         bot = Bot(
             token=settings.bot_token,
             default=DefaultBotProperties(parse_mode=ParseMode.HTML),
+            session=session,
         )
         try:
             await _startup(bot)

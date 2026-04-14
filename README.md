@@ -46,6 +46,8 @@ Loyiha ildizida `.env` fayl yarating:
 BOT_TOKEN=123456:ABCDEF_your_telegram_token
 DATABASE_URL=sqlite+aiosqlite:///./data/qrbot.db
 MAX_QR_CONTENT_LENGTH=500
+# ixtiyoriy: tarmoq cheklovi bo'lsa HTTP(S) proxy
+# TELEGRAM_PROXY=http://user:pass@host:port
 ```
 
 ## O‘rnatish
@@ -139,4 +141,5 @@ Muhim:
 - Vaqtinchalik export fayllari diskka yozilmaydi, xotirada ishlanadi.
 - QR uchun matn uzunligi `MAX_QR_CONTENT_LENGTH` orqali cheklanadi (standart: 500 belgi).
 - Rasm ichidagi QR o'qish `pyzbar` ishlay olgan muhitda faol; PythonAnywhere cheklovi bo'lsa, botning qolgan funksiyalari ishlashda davom etadi.
+- Agar `Cannot connect to host api.telegram.org:443` xatosi qolsa, `.env` ichida `TELEGRAM_PROXY` belgilang yoki hosting tarmoq cheklovlarini tekshiring.
 
